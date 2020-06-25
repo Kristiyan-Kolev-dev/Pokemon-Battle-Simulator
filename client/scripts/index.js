@@ -1,5 +1,4 @@
-// The main JS file
-import { PokemonService } from './services.js';
+import { PokemonService } from './pokemon-service.js';
 
 const bootstrap = async () => {
   const pokeService = new PokemonService();
