@@ -1,14 +1,15 @@
 import { PokemonService } from './pokemon-service.js';
-import { GameLogic } from './game-logic.js';
-import { Events } from './events.js';
+import { PokemonSelectionPage } from './pokemon-selection-page.js';
+import { EventListeners } from './event-listeners.js';
 
 const bootstrap = async () => {
-  const pokeService = new PokemonService();
-  const pokeEvents = new Events();
+  const pokemonService = new PokemonService();
+  const eventListeners = new EventListeners();
 
-  const gameLogic = new GameLogic(pokeService, pokeEvents);
+  const pokemonSelectionPage = new PokemonSelectionPage(pokemonService);
 
-  gameLogic.onInit();
+  await pokemonSelectionPage.onInit();
+  await eventListeners.onInit();
 };
 
 bootstrap();
