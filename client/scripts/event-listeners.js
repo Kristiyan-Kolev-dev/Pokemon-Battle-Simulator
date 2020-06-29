@@ -1,5 +1,11 @@
 export class EventListeners {
-  constructor() {}
+  constructor(battlePage) {
+    this.battlePage = battlePage;
+  }
 
-  async onInit() {}
+  async onInit() {
+    const cardButtons = document.querySelectorAll('.pokemon-selection-button');
+
+    cardButtons.forEach((b) => b.addEventListener('click', this.battlePage.startBattle));
+  }
 }

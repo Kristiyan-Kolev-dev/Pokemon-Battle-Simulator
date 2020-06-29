@@ -5,7 +5,8 @@
 }
 
 body {
-  background: url('./assets/background-image.jpg') no-repeat center center fixed;
+  background: url('./assets/images/selection-page-background.jpg') no-repeat center center
+    fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -46,13 +47,16 @@ header {
 
 .pokemon-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-  cursor: pointer;
   opacity: 0.8;
 }
 
 .pokemon-sprite > img {
   min-width: 75%;
   min-height: 75%;
+}
+
+.pokemon-selection-button:hover {
+  cursor: pointer;
 }
 
 .pokemon-info {

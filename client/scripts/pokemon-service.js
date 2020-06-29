@@ -8,8 +8,8 @@ export class PokemonService {
     return pokemon;
   }
 
-  async getPokemonDetails(pokemonName) {
-    const response = await fetch(`${baseURL}/pokemon/${pokemonName}`);
+  async getPokemonDetails(pokemonNameOrId) {
+    const response = await fetch(`${baseURL}/pokemon/${pokemonNameOrId}`);
     const details = await response.json();
 
     return details;
