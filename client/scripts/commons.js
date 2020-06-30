@@ -1,3 +1,6 @@
+export const battleSong = new Audio('./assets/audio/battle.mp3');
+export const hitSound = new Audio('./assets/audio/hit.wav');
+
 export const baseURL = `https://pokeapi.co/api/v2`;
 
 export const capitalizeText = (string) => {

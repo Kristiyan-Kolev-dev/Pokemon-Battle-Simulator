@@ -1,8 +1,8 @@
+import { battleSong, hitSound } from './commons.js';
+
 export class BattlePage {
-  constructor(pokemonService, battleSong, hitSound) {
+  constructor(pokemonService) {
     this.pokemonService = pokemonService;
-    this.battleSong = battleSong;
-    this.hitSound = hitSound;
   }
 
   async startBattle(event) {
@@ -21,9 +21,9 @@ export class BattlePage {
   }
 
   async generateAudio() {
-    this.battleSong.volume = 0.1;
-    this.hitSound.volume = 0.3;
-    this.battleSong.play();
+    battleSong.volume = 0.1;
+    hitSound.volume = 0.3;
+    battleSong.play();
   }
 
   async generatePlayerPokemon() {}
@@ -31,19 +31,19 @@ export class BattlePage {
   async generateOpponentPokemon() {}
 
   async endBattle() {
-    this.battleSong.pause();
-    this.battleSong.currentTime = 0;
+    battleSong.pause();
+    battleSong.currentTime = 0;
   }
 
   async backToSelectionPage() {}
 
   async muteSound() {
-    this.battleSong.muted = true;
-    this.hitSound.muted = true;
+    battleSong.muted = true;
+    hitSound.muted = true;
   }
 
   async unmuteSound() {
-    this.battleSong.muted = false;
-    this.hitSound.muted = false;
+    battleSong.muted = false;
+    hitSound.muted = false;
   }
 }
