@@ -3,22 +3,33 @@ export const hitSound = new Audio('./assets/audio/hit.wav');
 
 export const baseURL = `https://pokeapi.co/api/v2`;
 
-export const capitalizeText = (string) => {
-  if (typeof string === 'string') {
-    return string.includes('-')
-      ? string
-          .split('-')
-          .map((s) => s[0].toUpperCase() + s.slice(1))
-          .join(' ')
-      : string.charAt(0).toUpperCase() + string.slice(1);
-  } else {
-    return null;
+export const randomIntegerGenerator = (minRange, maxRange) => {
+  if (typeof minRange !== 'number' || typeof maxRange !== 'number') {
+    throw new TypeError('The provided min and max ranges have to be of type number!');
   }
+
+  Math.round(minRange);
+  Math.round(maxRange);
+
+  return Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
+};
+
+export const capitalizeText = (text) => {
+  if (typeof text !== 'string') {
+    throw new TypeError('The provided text has to be of type string!');
+  }
+
+  return text.includes('-')
+    ? text
+        .split('-')
+        .map((t) => t[0].toUpperCase() + t.slice(1))
+        .join(' ')
+    : text.charAt(0).toUpperCase() + text.slice(1);
 };
 
 export const mapPokemonDetails = (pokemonDetails) => {
   const pokemonId = pokemonDetails.id;
-  const pokemonSprite = pokemonDetails.sprites.front_default;
+  const pokemonSprites = pokemonDetails.sprites;
   const pokemonName = capitalizeText(pokemonDetails.name);
 
   let {
@@ -28,49 +39,48 @@ export const mapPokemonDetails = (pokemonDetails) => {
   pokemonAbility = capitalizeText(pokemonAbility);
 
   const [
-    { base_stat: pokemonHP },
+    { base_stat: pokemonHealthPoints },
     { base_stat: pokemonAttack },
-    { base_stat: pokemonDefense },
-    { base_stat: pokemonSpAttack },
-    { base_stat: pokemonSpDefense },
+    { base_stat: pokemonDefence },
+    { base_stat: pokemonSpecialAttack },
+    { base_stat: pokemonSpecialDefence },
     { base_stat: pokemonSpeed },
   ] = pokemonDetails.stats;
 
   let [
     {
-      move: { name: pokemonMoveOne },
+      move: { name: moveOne },
     },
     {
-      move: { name: pokemonMoveTwo },
+      move: { name: moveTwo },
     },
     {
-      move: { name: pokemonMoveThree },
+      move: { name: moveThree },
     },
     {
-      move: { name: pokemonMoveFour },
+      move: { name: moveFour },
     },
   ] = pokemonDetails.moves;
 
-  pokemonMoveOne = capitalizeText(pokemonMoveOne);
-  pokemonMoveTwo = capitalizeText(pokemonMoveTwo);
-  pokemonMoveThree = capitalizeText(pokemonMoveThree);
-  pokemonMoveFour = capitalizeText(pokemonMoveFour);
+  moveOne = capitalizeText(moveOne);
+  moveTwo = capitalizeText(moveTwo);
+  moveThree = capitalizeText(moveThree);
+  moveFour = capitalizeText(moveFour);
+
+  const pokemonMoves = { moveOne, moveTwo, moveThree, moveFour };
 
   const mappedDetails = {
     pokemonId,
-    pokemonSprite,
+    pokemonSprites,
     pokemonName,
     pokemonAbility,
-    pokemonHP,
+    pokemonHealthPoints,
     pokemonAttack,
-    pokemonDefense,
-    pokemonSpAttack,
-    pokemonSpDefense,
+    pokemonDefence,
+    pokemonSpecialAttack,
+    pokemonSpecialDefence,
     pokemonSpeed,
-    pokemonMoveOne,
-    pokemonMoveTwo,
-    pokemonMoveThree,
-    pokemonMoveFour,
+    pokemonMoves,
   };
 
   return mappedDetails;
@@ -78,23 +88,20 @@ export const mapPokemonDetails = (pokemonDetails) => {
 
 export const pokemonCardBuilder = (
   pokemonId,
-  pokemonSprite,
+  pokemonSprites,
   pokemonName,
   pokemonAbility,
-  pokemonHP,
+  pokemonHealthPoints,
   pokemonAttack,
-  pokemonDefense,
-  pokemonSpAttack,
-  pokemonSpDefense,
+  pokemonDefence,
+  pokemonSpecialAttack,
+  pokemonSpecialDefence,
   pokemonSpeed,
-  pokemonMoveOne,
-  pokemonMoveTwo,
-  pokemonMoveThree,
-  pokemonMoveFour
+  pokemonMoves
 ) => {
   return `<div class="pokemon-card">
   <div class="pokemon-sprite">
-    <img src="${pokemonSprite}" alt="Pokemon Sprite">
+    <img src="${pokemonSprites.front_default}" alt="Pokemon Sprite">
     <button type="button" data-id="${pokemonId}" class="pokemon-selection-button">Choose</button>
   </div>
   
@@ -105,22 +112,22 @@ export const pokemonCardBuilder = (
     </div>
   
     <div class="pokemon-stats">
-      <p>HP: ${pokemonHP}</p>
+      <p>HP: ${pokemonHealthPoints}</p>
       <p>Attack: ${pokemonAttack}</p>
-      <p>Defense: ${pokemonDefense}</p>
-      <p>Special Attack: ${pokemonSpAttack}</p>
-      <p>Special Defense: ${pokemonSpDefense}</p>
+      <p>Defense: ${pokemonDefence}</p>
+      <p>Special Attack: ${pokemonSpecialAttack}</p>
+      <p>Special Defense: ${pokemonSpecialDefence}</p>
       <p>Speed: ${pokemonSpeed}</p>
     </div>
   </div>
   
   <div class="pokemon-moves">
-    <p>Move 1: ${pokemonMoveOne}</p>
-    <p>Move 2: ${pokemonMoveTwo}</p>
+    <p>Move 1: ${pokemonMoves.moveOne}</p>
+    <p>Move 2: ${pokemonMoves.moveTwo}</p>
   </div>
   <div class="pokemon-moves">
-    <p>Move 3: ${pokemonMoveThree}</p>
-    <p>Move 4: ${pokemonMoveFour}</p>
+    <p>Move 3: ${pokemonMoves.moveThree}</p>
+    <p>Move 4: ${pokemonMoves.moveFour}</p>
   </div>
   </div>`;
 };

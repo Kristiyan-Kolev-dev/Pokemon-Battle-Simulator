@@ -21,23 +21,20 @@ export class PokemonSelectionPage {
     for (const element of pokemonList) {
       const pokemonDetails = await this.pokemonServise.getPokemonDetails(element.name);
 
-      const details = mapPokemonDetails(pokemonDetails);
+      const mappedDetails = mapPokemonDetails(pokemonDetails);
 
       pokemonContainer.innerHTML += pokemonCardBuilder(
-        details.pokemonId,
-        details.pokemonSprite,
-        details.pokemonName,
-        details.pokemonAbility,
-        details.pokemonHP,
-        details.pokemonAttack,
-        details.pokemonDefense,
-        details.pokemonSpAttack,
-        details.pokemonSpDefense,
-        details.pokemonSpeed,
-        details.pokemonMoveOne,
-        details.pokemonMoveTwo,
-        details.pokemonMoveThree,
-        details.pokemonMoveFour
+        mappedDetails.pokemonId,
+        mappedDetails.pokemonSprites,
+        mappedDetails.pokemonName,
+        mappedDetails.pokemonAbility,
+        mappedDetails.pokemonHealthPoints,
+        mappedDetails.pokemonAttack,
+        mappedDetails.pokemonDefence,
+        mappedDetails.pokemonSpecialAttack,
+        mappedDetails.pokemonSpecialDefence,
+        mappedDetails.pokemonSpeed,
+        mappedDetails.pokemonMoves
       );
     }
   }
