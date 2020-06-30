@@ -5,7 +5,8 @@ export class EventListeners {
 
   async onInit() {
     const cardButtons = document.querySelectorAll('.pokemon-selection-button');
+    const startBattle = this.battlePage.startBattle.bind(this.battlePage);
 
-    cardButtons.forEach((b) => b.addEventListener('click', this.battlePage.startBattle));
+    cardButtons.forEach((b) => b.addEventListener('click', startBattle));
   }
 }

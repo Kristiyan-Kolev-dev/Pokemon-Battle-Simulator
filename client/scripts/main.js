@@ -4,10 +4,13 @@ import { EventListeners } from './event-listeners.js';
 import { BattlePage } from './battle-page.js';
 
 const bootstrap = async () => {
+  const battleSong = new Audio('./assets/audio/battle.mp3');
+  const hitSound = new Audio('./assets/audio/hit.wav');
+
   const pokemonService = new PokemonService();
 
   const pokemonSelectionPage = new PokemonSelectionPage(pokemonService);
-  const battlePage = new BattlePage(pokemonService);
+  const battlePage = new BattlePage(pokemonService, battleSong, hitSound);
 
   const eventListeners = new EventListeners(battlePage);
 
