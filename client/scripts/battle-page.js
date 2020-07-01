@@ -1,6 +1,10 @@
-import { battleSong, hitSound } from './commons.js';
+import { battleSong, hitSound, mapPokemonDetails, randomIntegerGenerator } from './commons.js';
+import { Pokemon } from './pokemon.js';
 
 export class BattlePage {
+  playerPokemon;
+  opponentPokemon;
+
   constructor(pokemonService) {
     this.pokemonService = pokemonService;
   }
@@ -15,34 +19,46 @@ export class BattlePage {
       pokemonContainer.removeChild(pokemonContainer.firstChild);
     }
 
+    await this.generatePlayerPokemon(event.target.dataset.id);
+    await this.generateOpponentPokemon();
     this.generateAudio();
-    this.generatePlayerPokemon();
-    this.generateOpponentPokemon();
   }
 
-  async generateAudio() {
+  async generatePlayerPokemon(pokemonId) {
+    const pokemonDetails = await this.pokemonService.getPokemonDetails(pokemonId);
+    const mappedDetails = mapPokemonDetails(pokemonDetails);
+
+    this.playerPokemon = new Pokemon(mappedDetails);
+  }
+
+  async generateOpponentPokemon() {
+    const pokemonId = randomIntegerGenerator(1, 20);
+
+    const pokemonDetails = await this.pokemonService.getPokemonDetails(pokemonId);
+    const mappedDetails = mapPokemonDetails(pokemonDetails);
+
+    this.opponentPokemon = new Pokemon(mappedDetails);
+  }
+
+  generateAudio() {
     battleSong.volume = 0.1;
     hitSound.volume = 0.3;
     battleSong.play();
   }
 
-  async generatePlayerPokemon() {}
-
-  async generateOpponentPokemon() {}
-
-  async endBattle() {
+  endBattle() {
     battleSong.pause();
     battleSong.currentTime = 0;
   }
 
-  async backToSelectionPage() {}
+  backToSelectionPage() {}
 
-  async muteSound() {
+  muteSound() {
     battleSong.muted = true;
     hitSound.muted = true;
   }
 
-  async unmuteSound() {
+  unmuteSound() {
     battleSong.muted = false;
     hitSound.muted = false;
   }

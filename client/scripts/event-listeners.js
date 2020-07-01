@@ -3,7 +3,7 @@ export class EventListeners {
     this.battlePage = battlePage;
   }
 
-  async onInit() {
+  onInit() {
     const cardButtons = document.querySelectorAll('.pokemon-selection-button');
     const startBattle = this.battlePage.startBattle.bind(this.battlePage);
 

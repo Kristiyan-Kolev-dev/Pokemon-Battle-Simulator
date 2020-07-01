@@ -12,7 +12,7 @@ const bootstrap = async () => {
   const eventListeners = new EventListeners(battlePage);
 
   await pokemonSelectionPage.onInit();
-  await eventListeners.onInit();
+  eventListeners.onInit();
 };
 
 bootstrap();

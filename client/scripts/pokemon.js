@@ -15,11 +15,11 @@ export class Pokemon {
     this.moves = pokemonDetails.pokemonMoves;
   }
 
-  async attack(target) {
+  normalAttack(target) {
     target.healthPoints -= this.calculateActualDamage(target);
   }
 
-  async calculateActualDamage(target) {
-    return Math.floor((this.attack / target.defence) * randomIntegerGenerator(0, 100));
+  calculateActualDamage(target) {
+    return Math.floor((this.attack / target.defence) * randomIntegerGenerator(5, 25));
   }
 }
