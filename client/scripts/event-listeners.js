@@ -4,9 +4,9 @@ export class EventListeners {
   }
 
   onInit() {
-    const cardButtons = document.querySelectorAll('.pokemon-selection-button');
+    const cardImages = document.querySelectorAll('.pokemon-sprite > img');
     const startBattle = this.battlePage.startBattle.bind(this.battlePage);
 
-    cardButtons.forEach((b) => b.addEventListener('click', startBattle));
+    cardImages.forEach((b) => b.addEventListener('click', startBattle));
   }
 }

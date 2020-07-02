@@ -99,35 +99,39 @@ export const pokemonCardBuilder = (
   pokemonSpeed,
   pokemonMoves
 ) => {
-  return `<div class="pokemon-card">
-  <div class="pokemon-sprite">
-    <img src="${pokemonSprites.front_default}" alt="Pokemon Sprite">
-    <button type="button" data-id="${pokemonId}" class="pokemon-selection-button">Choose</button>
-  </div>
-  
-  <div class="pokemon-info">
+  return `
+<div class="pokemon-card">
+  <div class="pokemon-identity">
     <div class="pokemon-name">
       <h1>${pokemonName}</h1>
+    </div>
+
+    <div class="pokemon-sprite">
+      <img data-id="${pokemonId}" src="${pokemonSprites.front_default}" alt="Pokemon Sprite">
+    </div>
+  </div>
+
+  <div class="pokemon-stats">
+    <p>Health Points: ${pokemonHealthPoints}</p>
+    <p>Attack: ${pokemonAttack}</p>
+    <p>Defense: ${pokemonDefence}</p>
+    <p>Special Attack: ${pokemonSpecialAttack}</p>
+    <p>Special Defense: ${pokemonSpecialDefence}</p>
+    <p>Speed: ${pokemonSpeed}</p>
+  </div>
+
+  <div class="pokemon-skills">
+    <div class="pokemon-ability">
       <p>Ability: ${pokemonAbility}</p>
     </div>
-  
-    <div class="pokemon-stats">
-      <p>HP: ${pokemonHealthPoints}</p>
-      <p>Attack: ${pokemonAttack}</p>
-      <p>Defense: ${pokemonDefence}</p>
-      <p>Special Attack: ${pokemonSpecialAttack}</p>
-      <p>Special Defense: ${pokemonSpecialDefence}</p>
-      <p>Speed: ${pokemonSpeed}</p>
+
+    <div class="pokemon-moves">
+      <p>Move 1: ${pokemonMoves.moveOne}</p>
+      <p>Move 2: ${pokemonMoves.moveTwo}</p>
+      <p>Move 3: ${pokemonMoves.moveThree}</p>
+      <p>Move 4: ${pokemonMoves.moveFour}</p>
     </div>
   </div>
-  
-  <div class="pokemon-moves">
-    <p>Move 1: ${pokemonMoves.moveOne}</p>
-    <p>Move 2: ${pokemonMoves.moveTwo}</p>
-  </div>
-  <div class="pokemon-moves">
-    <p>Move 3: ${pokemonMoves.moveThree}</p>
-    <p>Move 4: ${pokemonMoves.moveFour}</p>
-  </div>
-  </div>`;
+</div>
+  `;
 };

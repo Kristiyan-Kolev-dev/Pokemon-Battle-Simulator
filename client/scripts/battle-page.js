@@ -10,17 +10,9 @@ export class BattlePage {
   }
 
   async startBattle(event) {
-    const body = document.querySelector('body');
-    body.style.backgroundImage = "url('./assets/images/battle-page-background.jpg')";
-
-    const pokemonContainer = document.querySelector('.pokemon-container');
-
-    while (pokemonContainer.firstChild) {
-      pokemonContainer.removeChild(pokemonContainer.firstChild);
-    }
-
     await this.generatePlayerPokemon(event.target.dataset.id);
     await this.generateOpponentPokemon();
+    this.generateCanvas();
     this.generateAudio();
   }
 
@@ -40,10 +32,22 @@ export class BattlePage {
     this.opponentPokemon = new Pokemon(mappedDetails);
   }
 
+  generateCanvas() {
+    const pokemonContainer = document.querySelector('.pokemon-container');
+    pokemonContainer.innerHTML = '<canvas></canvas>';
+
+    // const canvas = document.querySelector('canvas');
+    // const context = canvas.getContext('2d');
+
+    // context.fillStyle = 'green';
+    // context.fillRect(100, 100, 35, 5);
+    // context.fillRect(150, 80, 35, 5);
+  }
+
   generateAudio() {
     battleSong.volume = 0.1;
     hitSound.volume = 0.3;
-    battleSong.play();
+    // battleSong.play();
   }
 
   endBattle() {

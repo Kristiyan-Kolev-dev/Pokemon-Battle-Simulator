@@ -5,8 +5,7 @@
 }
 
 body {
-  background: url('./assets/images/selection-page-background.jpg') no-repeat center center
-    fixed;
+  background: url('./assets/images/main-background.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -22,6 +21,17 @@ header {
   opacity: 0.8;
 }
 
+canvas {
+  background: url('./assets/images/battle-background.jpg') no-repeat center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  border: 1px solid black;
+  width: 61%;
+}
+
 .pokemon-container {
   display: flex;
   flex-flow: row wrap;
@@ -30,7 +40,8 @@ header {
 
 .pokemon-card {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1.7fr 1.2fr 1fr;
+  row-gap: 7px;
 
   background-color: rgb(255, 255, 255);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -40,8 +51,7 @@ header {
   margin-right: 1%;
   margin-left: 1%;
   padding: 1% 1%;
-  width: 350px;
-  min-height: 250px;
+  width: 200px;
   opacity: 0.5;
 }
 
@@ -50,38 +60,31 @@ header {
   opacity: 0.8;
 }
 
-.pokemon-sprite > img {
-  min-width: 75%;
-  min-height: 75%;
+.pokemon-identity {
+  text-align: center;
 }
 
-.pokemon-selection-button:hover {
+.pokemon-sprite {
+  display: flex;
+  justify-content: center;
+}
+
+.pokemon-sprite > img {
+  min-width: 75%;
+}
+
+.pokemon-sprite > img:hover {
   cursor: pointer;
 }
 
-.pokemon-info {
-  display: grid;
-  grid-template-rows: 1fr 3fr;
-  row-gap: 5px;
-}
-
-.pokemon-moves {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-}
-
-@media all and (max-width: 500px) {
-  .pokemon-container {
-    flex-direction: column;
-  }
-
-  .pokemon-card {
+@media all and (max-width: 700px) {
+  canvas {
     width: 97.5%;
   }
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  .pokemon-card {
-    width: 45%;
+  canvas {
+    width: 80%;
   }
 }
