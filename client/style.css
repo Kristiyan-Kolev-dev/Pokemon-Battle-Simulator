@@ -4,21 +4,37 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   background: url('./assets/images/main-background.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+
+  font-size: 1.05em;
+  min-height: 100%;
+  width: 100%;
 }
 
 header {
   background: rgb(22, 72, 107);
+  margin-bottom: 2.5%;
   padding: 0.85%;
-  margin-bottom: 5%;
+  opacity: 0.8;
+
   text-align: center;
   color: white;
-  opacity: 0.8;
+}
+
+.canvas-container {
+  display: grid;
+  align-content: center;
+  justify-items: center;
 }
 
 canvas {
@@ -29,7 +45,7 @@ canvas {
   background-size: cover;
 
   border: 1px solid black;
-  width: 61%;
+  border-radius: 5px;
 }
 
 .pokemon-container {
@@ -64,27 +80,10 @@ canvas {
   text-align: center;
 }
 
-.pokemon-sprite {
-  display: flex;
-  justify-content: center;
-}
-
 .pokemon-sprite > img {
   min-width: 75%;
 }
 
 .pokemon-sprite > img:hover {
   cursor: pointer;
-}
-
-@media all and (max-width: 700px) {
-  canvas {
-    width: 97.5%;
-  }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  canvas {
-    width: 80%;
-  }
 }
