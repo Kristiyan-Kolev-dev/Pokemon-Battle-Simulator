@@ -8,7 +8,7 @@ export class EventListeners {
     const startBattle = this.battlePage.startBattle.bind(this.battlePage);
     cardImages.forEach((b) => b.addEventListener('click', startBattle));
 
-    const renderCanvas = this.battlePage.renderCanvas.bind(this.battlePage);
-    window.addEventListener('resize', renderCanvas);
+    const resizeCanvas = this.battlePage.setUpBattleground.bind(this.battlePage);
+    window.addEventListener('resize', resizeCanvas);
   }
 }

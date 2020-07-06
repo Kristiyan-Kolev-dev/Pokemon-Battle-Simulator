@@ -20,6 +20,6 @@ export class Pokemon {
   }
 
   calculateActualDamage(target) {
-    return Math.floor((this.attack / target.defence) * randomIntegerGenerator(5, 25));
+    return Math.floor((this.attack / target.defence) * randomIntegerGenerator(5, 35));
   }
 }
