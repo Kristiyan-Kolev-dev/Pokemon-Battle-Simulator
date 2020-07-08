@@ -1,17 +1,17 @@
-import { PokemonSelectionPage } from './pokemon-selection-page.js';
+import { PokemonSelection } from './pokemon-selection.js';
 import { PokemonService } from './pokemon-service.js';
 import { EventListeners } from './event-listeners.js';
-import { BattlePage } from './battle-page.js';
+import { PokemonBattleground } from './pokemon-battleground.js';
 
 const bootstrap = async () => {
   const pokemonService = new PokemonService();
 
-  const pokemonSelectionPage = new PokemonSelectionPage(pokemonService);
-  const battlePage = new BattlePage(pokemonService);
+  const pokemonSelection = new PokemonSelection(pokemonService);
+  const pokemonBattleground = new PokemonBattleground(pokemonService);
 
-  const eventListeners = new EventListeners(battlePage);
+  const eventListeners = new EventListeners(pokemonBattleground);
 
-  await pokemonSelectionPage.onInit();
+  await pokemonSelection.onInit();
   eventListeners.onInit();
 };
 

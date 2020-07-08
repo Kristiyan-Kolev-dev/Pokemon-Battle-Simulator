@@ -1,7 +1,7 @@
 import { battleSong, hitSound, mapPokemonDetails, randomIntegerGenerator } from './commons.js';
 import { Pokemon } from './pokemon.js';
 
-export class BattlePage {
+export class PokemonBattleground {
   playerCanvasTemplate;
   opponentCanvasTemplate;
   playerPokemon;
@@ -49,10 +49,7 @@ export class BattlePage {
 
   generateCanvas() {
     const pokemonContainer = document.querySelector('.pokemon-container');
-
-    while (pokemonContainer.firstChild) {
-      pokemonContainer.removeChild(pokemonContainer.firstChild);
-    }
+    pokemonContainer.style.display = 'none';
 
     const canvasContainer = document.querySelector('.canvas-container');
     canvasContainer.innerHTML = '<canvas></canvas>';
@@ -73,8 +70,8 @@ export class BattlePage {
       y: context.canvas.height * 0.73,
       width: context.canvas.width * 0.07 + 50,
       height: context.canvas.height * 0.17 + 50,
-      dx: 5,
-      dy: 2.5,
+      dx: 6,
+      dy: 3,
       sprite: undefined,
     };
     this.playerCanvasTemplate = playerCanvasTemplate;
@@ -84,8 +81,8 @@ export class BattlePage {
       y: context.canvas.height * 0.55,
       width: context.canvas.width * 0.07 + 50,
       height: context.canvas.height * 0.17 + 50,
-      dx: 5,
-      dy: 2.5,
+      dx: 6,
+      dy: 3,
       sprite: undefined,
     };
     this.opponentCanvasTemplate = opponentCanvasTemplate;
@@ -164,7 +161,7 @@ export class BattlePage {
 
       setTimeout(() => {
         moveBackward();
-      }, 2000);
+      }, 1000);
     };
 
     const moveBackward = () => {
@@ -240,7 +237,7 @@ export class BattlePage {
 
       setTimeout(() => {
         moveBackward();
-      }, 2000);
+      }, 1000);
     };
 
     const moveBackward = () => {
@@ -268,9 +265,67 @@ export class BattlePage {
   }
 
   endBattle(context) {
+    const drawBattleResult = () => {
+      const x = context.canvas.width * 0.5;
+      const y = context.canvas.height * 0.35;
+
+      context.font = '11vh serif';
+      context.textAlign = 'center';
+      context.fillStyle = 'rgb(227,242,253)';
+      context.strokeStyle = 'black';
+
+      if (this.opponentPokemon.healthPoints <= 0) {
+        context.fillText('You Win', x, y);
+        context.strokeText('You Win', x, y);
+      } else if (this.playerPokemon.healthPoints <= 0) {
+        context.fillText('You Lose', x, y);
+        context.strokeText('You Lose', x, y);
+      }
+    };
+
+    const drawPlayAgainButton = () => {
+      const buttonWidth = context.canvas.width * 0.07 + 100;
+      const buttonHeight = context.canvas.height * 0.02 + 25;
+
+      const x = (context.canvas.width - buttonWidth) * 0.5;
+      const y = context.canvas.height * 0.4;
+
+      const buttonImg = new Image();
+      buttonImg.src = `./assets/images/play-again-button.png`;
+      buttonImg.onload = () => context.drawImage(buttonImg, x, y, buttonWidth, buttonHeight);
+
+      const buttonTemplate = { width: buttonWidth, height: buttonHeight, x, y };
+
+      const callback = this.backToPokemonSelection.bind(this, buttonTemplate);
+      context.canvas.addEventListener('click', callback);
+    };
+
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    drawBattleResult();
+    drawPlayAgainButton();
+
     battleSong.pause();
     battleSong.currentTime = 0;
+  }
+
+  backToPokemonSelection(button, event) {
+    const canvasBorders = this.context.canvas.getBoundingClientRect();
+    const mouseClickX = event.clientX - canvasBorders.left;
+    const mouseClickY = event.clientY - canvasBorders.top;
+
+    if (
+      mouseClickX < button.x + button.width &&
+      mouseClickX > button.x &&
+      mouseClickY < button.y + button.height &&
+      mouseClickY > button.y
+    ) {
+      const canvasContainer = document.querySelector('.canvas-container');
+      canvasContainer.removeChild(canvasContainer.firstChild);
+
+      const pokemonContainer = document.querySelector('.pokemon-container');
+      pokemonContainer.style.display = 'flex';
+    }
   }
 
   generateAudio() {
