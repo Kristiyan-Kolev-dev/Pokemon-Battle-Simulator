@@ -92,15 +92,19 @@ export class PokemonBattleground {
     playerCanvasSprite.src = `${this.playerPokemon.sprites.back_default}`;
     playerCanvasTemplate.sprite = playerCanvasSprite;
 
-    playerCanvasSprite.onload = () =>
+    playerCanvasSprite.onload = () => {
       this.canvasDrawings.drawPokemonSprite(context, playerCanvasTemplate);
+      this.canvasDrawings.drawHealthBar(context, playerCanvasTemplate, this.playerPokemon);
+    };
 
     const opponentCanvasSprite = new Image();
     opponentCanvasSprite.src = `${this.opponentPokemon.sprites.front_default}`;
     opponentCanvasTemplate.sprite = opponentCanvasSprite;
 
-    opponentCanvasSprite.onload = () =>
+    opponentCanvasSprite.onload = () => {
       this.canvasDrawings.drawPokemonSprite(context, opponentCanvasTemplate);
+      this.canvasDrawings.drawHealthBar(context, opponentCanvasTemplate, this.opponentPokemon);
+    };
   }
 
   playerTurn() {
@@ -108,15 +112,25 @@ export class PokemonBattleground {
     const playerSprite = { ...this.playerCanvasTemplate };
     const opponentSprite = { ...this.opponentCanvasTemplate };
 
-    const drawSprites = () => {
+    const drawPlayer = () => {
       this.canvasDrawings.drawPokemonSprite(context, playerSprite);
+    };
+
+    const drawOpponent = () => {
       this.canvasDrawings.drawPokemonSprite(context, opponentSprite);
+
+      this.canvasDrawings.drawHealthBar(
+        context,
+        this.opponentCanvasTemplate,
+        this.opponentPokemon
+      );
     };
 
     const moveForward = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-      drawSprites();
+      drawPlayer();
+      drawOpponent();
 
       playerSprite.x += playerSprite.dx;
       playerSprite.y -= playerSprite.dy;
@@ -135,6 +149,11 @@ export class PokemonBattleground {
       this.playerPokemon.normalAttack(this.opponentPokemon);
       hitSound.play();
 
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+      drawPlayer();
+      drawOpponent();
+
       setTimeout(() => {
         moveBackward();
       }, 1000);
@@ -143,7 +162,8 @@ export class PokemonBattleground {
     const moveBackward = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-      drawSprites();
+      drawPlayer();
+      drawOpponent();
 
       playerSprite.x -= playerSprite.dx;
       playerSprite.y += playerSprite.dy;
@@ -152,8 +172,16 @@ export class PokemonBattleground {
         playerSprite.x < this.playerCanvasTemplate.x &&
         playerSprite.y > this.playerCanvasTemplate.y
       ) {
+        this.canvasDrawings.redrawCanvas(
+          context,
+          this.playerCanvasTemplate,
+          this.opponentCanvasTemplate,
+          this.playerPokemon,
+          this.opponentPokemon
+        );
+
         setTimeout(() => {
-          this.opponentPokemon.healthPoints <= 0
+          this.opponentPokemon.currentHealthPoints <= 0
             ? this.endBattle(context)
             : this.opponentTurn();
         }, 1000);
@@ -171,15 +199,25 @@ export class PokemonBattleground {
     const playerSprite = { ...this.playerCanvasTemplate };
     const opponentSprite = { ...this.opponentCanvasTemplate };
 
-    const drawSprites = () => {
+    const drawPlayer = () => {
       this.canvasDrawings.drawPokemonSprite(context, playerSprite);
+
+      this.canvasDrawings.drawHealthBar(
+        context,
+        this.playerCanvasTemplate,
+        this.playerPokemon
+      );
+    };
+
+    const drawOpponent = () => {
       this.canvasDrawings.drawPokemonSprite(context, opponentSprite);
     };
 
     const moveForward = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-      drawSprites();
+      drawOpponent();
+      drawPlayer();
 
       opponentSprite.x -= opponentSprite.dx;
       opponentSprite.y += opponentSprite.dy;
@@ -198,6 +236,11 @@ export class PokemonBattleground {
       this.opponentPokemon.normalAttack(this.playerPokemon);
       hitSound.play();
 
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+      drawOpponent();
+      drawPlayer();
+
       setTimeout(() => {
         moveBackward();
       }, 1000);
@@ -206,7 +249,8 @@ export class PokemonBattleground {
     const moveBackward = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-      drawSprites();
+      drawOpponent();
+      drawPlayer();
 
       opponentSprite.x += opponentSprite.dx;
       opponentSprite.y -= opponentSprite.dy;
@@ -215,8 +259,18 @@ export class PokemonBattleground {
         opponentSprite.x > this.opponentCanvasTemplate.x &&
         opponentSprite.y < this.opponentCanvasTemplate.y
       ) {
+        this.canvasDrawings.redrawCanvas(
+          context,
+          this.playerCanvasTemplate,
+          this.opponentCanvasTemplate,
+          this.playerPokemon,
+          this.opponentPokemon
+        );
+
         setTimeout(() => {
-          this.playerPokemon.healthPoints <= 0 ? this.endBattle(context) : this.playerTurn();
+          this.playerPokemon.currentHealthPoints <= 0
+            ? this.endBattle(context)
+            : this.playerTurn();
         }, 1000);
       } else {
         requestAnimationFrame(moveBackward);
@@ -260,18 +314,8 @@ export class PokemonBattleground {
   }
 
   generateAudio() {
-    battleSong.volume = 0.05;
+    battleSong.volume = 0.07;
     hitSound.volume = 0.2;
     battleSong.play();
-  }
-
-  muteSound() {
-    battleSong.muted = true;
-    hitSound.muted = true;
-  }
-
-  unmuteSound() {
-    battleSong.muted = false;
-    hitSound.muted = false;
   }
 }

@@ -6,7 +6,8 @@ export class Pokemon {
     this.sprites = pokemonDetails.pokemonSprites;
     this.name = pokemonDetails.pokemonName;
     this.ability = pokemonDetails.pokemonAbility;
-    this.healthPoints = pokemonDetails.pokemonHealthPoints;
+    this.maxHealthPoints = pokemonDetails.pokemonHealthPoints;
+    this.currentHealthPoints = pokemonDetails.pokemonHealthPoints;
     this.attack = pokemonDetails.pokemonAttack;
     this.defence = pokemonDetails.pokemonDefence;
     this.specialAttack = pokemonDetails.pokemonSpecialAttack;
@@ -16,10 +17,10 @@ export class Pokemon {
   }
 
   normalAttack(target) {
-    target.healthPoints -= this.calculateActualDamage(target);
+    target.currentHealthPoints -= this.calculateActualDamage(target);
   }
 
   calculateActualDamage(target) {
-    return Math.floor((this.attack / target.defence) * randomIntegerGenerator(5, 35));
+    return Math.floor((this.attack / target.defence) * randomIntegerGenerator(5, 25));
   }
 }
