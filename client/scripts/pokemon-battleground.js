@@ -95,6 +95,7 @@ export class PokemonBattleground {
     playerCanvasSprite.onload = () => {
       this.canvasDrawings.drawPokemonSprite(context, playerCanvasTemplate);
       this.canvasDrawings.drawHealthBar(context, playerCanvasTemplate, this.playerPokemon);
+      this.canvasDrawings.drawPokemonName(context, playerCanvasTemplate, this.playerPokemon);
     };
 
     const opponentCanvasSprite = new Image();
@@ -104,6 +105,11 @@ export class PokemonBattleground {
     opponentCanvasSprite.onload = () => {
       this.canvasDrawings.drawPokemonSprite(context, opponentCanvasTemplate);
       this.canvasDrawings.drawHealthBar(context, opponentCanvasTemplate, this.opponentPokemon);
+      this.canvasDrawings.drawPokemonName(
+        context,
+        opponentCanvasTemplate,
+        this.opponentPokemon
+      );
     };
   }
 

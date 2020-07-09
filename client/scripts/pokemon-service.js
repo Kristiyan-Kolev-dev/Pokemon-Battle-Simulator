@@ -8,6 +8,13 @@ export class PokemonService {
     return pokemon;
   }
 
+  async getFirstFiftyPokemon() {
+    const response = await fetch(`${baseURL}/pokemon?limit=50&offset=0`);
+    const pokemon = await response.json();
+
+    return pokemon;
+  }
+
   async getPokemonDetails(pokemonNameOrId) {
     const response = await fetch(`${baseURL}/pokemon/${pokemonNameOrId}`);
     const details = await response.json();

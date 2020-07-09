@@ -6,7 +6,7 @@ export class PokemonSelection {
   }
 
   async onInit() {
-    const { results: pokemonList } = await this.pokemonServise.getFirstTwentyPokemon();
+    const { results: pokemonList } = await this.pokemonServise.getFirstFiftyPokemon();
 
     await this.generatePokemonCards(pokemonList);
   }

@@ -9,10 +9,13 @@ export class CanvasDrawings {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     this.drawPokemonSprite(context, playerCanvasTemplate);
-    this.drawHealthBar(context, playerCanvasTemplate, playerPokemonDetails);
-
     this.drawPokemonSprite(context, opponentCanvasTemplate);
+
+    this.drawHealthBar(context, playerCanvasTemplate, playerPokemonDetails);
     this.drawHealthBar(context, opponentCanvasTemplate, opponentPokemonDetails);
+
+    this.drawPokemonName(context, playerCanvasTemplate, playerPokemonDetails);
+    this.drawPokemonName(context, opponentCanvasTemplate, opponentPokemonDetails);
   }
 
   drawPokemonSprite(context, template) {
@@ -58,6 +61,20 @@ export class CanvasDrawings {
     const buttonTemplate = { width: buttonWidth, height: buttonHeight, x, y };
 
     return buttonTemplate;
+  }
+
+  drawPokemonName(context, canvasTemplate, pokemonDetails) {
+    const name = pokemonDetails.name;
+    const x = canvasTemplate.x;
+    const y = canvasTemplate.y * 0.95;
+
+    context.font = '3vh serif';
+    context.textAlign = 'left';
+    context.fillStyle = 'rgb(227,242,253)';
+    context.fillStyle = 'black';
+    context.lineWidth = 0.5;
+
+    context.fillText(name, x, y);
   }
 
   drawHealthBar(context, canvasTemplate, pokemonDetails) {
