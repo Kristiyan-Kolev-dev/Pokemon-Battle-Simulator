@@ -8,8 +8,9 @@ export class PokemonBattleground {
   opponentPokemon;
   context;
 
-  constructor(pokemonService) {
+  constructor(pokemonService, canvasDrawings) {
     this.pokemonService = pokemonService;
+    this.canvasDrawings = canvasDrawings;
   }
 
   async startBattle(event) {
@@ -92,26 +93,14 @@ export class PokemonBattleground {
     playerCanvasTemplate.sprite = playerCanvasSprite;
 
     playerCanvasSprite.onload = () =>
-      context.drawImage(
-        playerCanvasSprite,
-        playerCanvasTemplate.x,
-        playerCanvasTemplate.y,
-        playerCanvasTemplate.width,
-        playerCanvasTemplate.height
-      );
+      this.canvasDrawings.drawPokemonSprite(context, playerCanvasTemplate);
 
     const opponentCanvasSprite = new Image();
     opponentCanvasSprite.src = `${this.opponentPokemon.sprites.front_default}`;
     opponentCanvasTemplate.sprite = opponentCanvasSprite;
 
     opponentCanvasSprite.onload = () =>
-      context.drawImage(
-        opponentCanvasSprite,
-        opponentCanvasTemplate.x,
-        opponentCanvasTemplate.y,
-        opponentCanvasTemplate.width,
-        opponentCanvasTemplate.height
-      );
+      this.canvasDrawings.drawPokemonSprite(context, opponentCanvasTemplate);
   }
 
   playerTurn() {
@@ -120,21 +109,8 @@ export class PokemonBattleground {
     const opponentSprite = { ...this.opponentCanvasTemplate };
 
     const drawSprites = () => {
-      context.drawImage(
-        playerSprite.sprite,
-        playerSprite.x,
-        playerSprite.y,
-        playerSprite.width,
-        playerSprite.height
-      );
-
-      context.drawImage(
-        opponentSprite.sprite,
-        opponentSprite.x,
-        opponentSprite.y,
-        opponentSprite.width,
-        opponentSprite.height
-      );
+      this.canvasDrawings.drawPokemonSprite(context, playerSprite);
+      this.canvasDrawings.drawPokemonSprite(context, opponentSprite);
     };
 
     const moveForward = () => {
@@ -196,21 +172,8 @@ export class PokemonBattleground {
     const opponentSprite = { ...this.opponentCanvasTemplate };
 
     const drawSprites = () => {
-      context.drawImage(
-        playerSprite.sprite,
-        playerSprite.x,
-        playerSprite.y,
-        playerSprite.width,
-        playerSprite.height
-      );
-
-      context.drawImage(
-        opponentSprite.sprite,
-        opponentSprite.x,
-        opponentSprite.y,
-        opponentSprite.width,
-        opponentSprite.height
-      );
+      this.canvasDrawings.drawPokemonSprite(context, playerSprite);
+      this.canvasDrawings.drawPokemonSprite(context, opponentSprite);
     };
 
     const moveForward = () => {
@@ -265,45 +228,13 @@ export class PokemonBattleground {
   }
 
   endBattle(context) {
-    const drawBattleResult = () => {
-      const x = context.canvas.width * 0.5;
-      const y = context.canvas.height * 0.35;
-
-      context.font = '11vh serif';
-      context.textAlign = 'center';
-      context.fillStyle = 'rgb(227,242,253)';
-      context.strokeStyle = 'black';
-
-      if (this.opponentPokemon.healthPoints <= 0) {
-        context.fillText('You Win', x, y);
-        context.strokeText('You Win', x, y);
-      } else if (this.playerPokemon.healthPoints <= 0) {
-        context.fillText('You Lose', x, y);
-        context.strokeText('You Lose', x, y);
-      }
-    };
-
-    const drawPlayAgainButton = () => {
-      const buttonWidth = context.canvas.width * 0.07 + 100;
-      const buttonHeight = context.canvas.height * 0.02 + 25;
-
-      const x = (context.canvas.width - buttonWidth) * 0.5;
-      const y = context.canvas.height * 0.4;
-
-      const buttonImg = new Image();
-      buttonImg.src = `./assets/images/play-again-button.png`;
-      buttonImg.onload = () => context.drawImage(buttonImg, x, y, buttonWidth, buttonHeight);
-
-      const buttonTemplate = { width: buttonWidth, height: buttonHeight, x, y };
-
-      const callback = this.backToPokemonSelection.bind(this, buttonTemplate);
-      context.canvas.addEventListener('click', callback);
-    };
-
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    drawBattleResult();
-    drawPlayAgainButton();
+    this.canvasDrawings.drawBattleResult(context, this.playerPokemon, this.opponentPokemon);
+    const buttonTemplate = this.canvasDrawings.drawPlayAgainButton(context);
+
+    const callback = this.backToPokemonSelection.bind(this, buttonTemplate);
+    context.canvas.addEventListener('click', callback);
 
     battleSong.pause();
     battleSong.currentTime = 0;
@@ -329,8 +260,8 @@ export class PokemonBattleground {
   }
 
   generateAudio() {
-    battleSong.volume = 0.1;
-    hitSound.volume = 0.3;
+    battleSong.volume = 0.05;
+    hitSound.volume = 0.2;
     battleSong.play();
   }
 
