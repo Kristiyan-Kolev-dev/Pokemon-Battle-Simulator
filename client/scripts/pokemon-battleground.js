@@ -57,6 +57,7 @@ export class PokemonBattleground {
     this.context = document.querySelector('canvas').getContext('2d');
   }
 
+  // called on every window resize event
   setUpBattleground() {
     if (!document.querySelector('canvas')) {
       return;
@@ -65,6 +66,14 @@ export class PokemonBattleground {
 
     context.canvas.width = document.documentElement.clientWidth * 0.9;
     context.canvas.height = document.documentElement.clientHeight * 0.61;
+
+    if (
+      this.playerPokemon.currentHealthPoints <= 0 ||
+      this.opponentPokemon.currentHealthPoints <= 0
+    ) {
+      this.endBattle(context);
+      return;
+    }
 
     const playerCanvasTemplate = {
       x: context.canvas.width * 0.34,
