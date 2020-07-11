@@ -1,6 +1,6 @@
 #### Pokemon Battle Simulator
 
-A front-end client that uses the PokéAPI. Users can choose a pokemon, at which point an opponent is randomly generated and both pokemon are visualized on an html canvas where they battle.
+A single-page application, that uses the PokéAPI. Users can choose a pokemon, at which point an opponent is randomly generated and they start to battle.
 
 **Deployed project:**
 https://pokemon-battle-simulator-bfb15.web.app/
