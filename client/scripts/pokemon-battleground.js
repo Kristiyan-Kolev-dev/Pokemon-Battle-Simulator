@@ -2,11 +2,14 @@ import { battleSong, hitSound, mapPokemonDetails, randomIntegerGenerator } from 
 import { Pokemon } from './pokemon.js';
 
 export class PokemonBattleground {
+  attackButtonCanvasTemplate;
   playerCanvasTemplate;
   opponentCanvasTemplate;
   playerPokemon;
   opponentPokemon;
   context;
+
+  isPlayerTurn = false;
 
   constructor(pokemonService, canvasDrawings) {
     this.pokemonService = pokemonService;
@@ -22,14 +25,14 @@ export class PokemonBattleground {
 
     setTimeout(() => {
       if (this.playerPokemon.speed > this.opponentPokemon.speed) {
-        this.playerTurn();
+        this.playerTurnListener(this.context);
       } else if (this.playerPokemon.speed < this.opponentPokemon.speed) {
         this.opponentTurn();
       } else {
         const speedTieResolver = randomIntegerGenerator(1, 2);
-        speedTieResolver === 1 ? this.playerTurn() : this.opponentTurn();
+        speedTieResolver === 1 ? this.playerTurnListener(this.context) : this.opponentTurn();
       }
-    }, 2500);
+    }, 1500);
   }
 
   async generatePlayerPokemon(pokemonId) {
@@ -66,6 +69,10 @@ export class PokemonBattleground {
 
     context.canvas.width = document.documentElement.clientWidth * 0.9;
     context.canvas.height = document.documentElement.clientHeight * 0.61;
+
+    if (this.isPlayerTurn) {
+      this.attackButtonCanvasTemplate = this.canvasDrawings.drawAttackButton(context);
+    }
 
     if (
       this.playerPokemon.currentHealthPoints <= 0 ||
@@ -199,7 +206,7 @@ export class PokemonBattleground {
           this.opponentPokemon.currentHealthPoints <= 0
             ? this.endBattle(context)
             : this.opponentTurn();
-        }, 1000);
+        }, 500);
       } else {
         requestAnimationFrame(moveBackward);
       }
@@ -285,8 +292,8 @@ export class PokemonBattleground {
         setTimeout(() => {
           this.playerPokemon.currentHealthPoints <= 0
             ? this.endBattle(context)
-            : this.playerTurn();
-        }, 1000);
+            : this.playerTurnListener(context);
+        }, 500);
       } else {
         requestAnimationFrame(moveBackward);
       }
@@ -302,23 +309,23 @@ export class PokemonBattleground {
     this.canvasDrawings.drawBattleResult(context, this.playerPokemon, this.opponentPokemon);
     const buttonTemplate = this.canvasDrawings.drawPlayAgainButton(context);
 
-    const callback = this.backToPokemonSelection.bind(this, buttonTemplate);
-    context.canvas.addEventListener('click', callback);
+    const backToSelectionCallback = this.backToPokemonSelection.bind(this, buttonTemplate);
+    context.canvas.addEventListener('click', backToSelectionCallback);
 
     battleSong.pause();
     battleSong.currentTime = 0;
   }
 
-  backToPokemonSelection(button, event) {
+  backToPokemonSelection(playAgainButton, event) {
     const canvasBorders = this.context.canvas.getBoundingClientRect();
     const mouseClickX = event.clientX - canvasBorders.left;
     const mouseClickY = event.clientY - canvasBorders.top;
 
     if (
-      mouseClickX < button.x + button.width &&
-      mouseClickX > button.x &&
-      mouseClickY < button.y + button.height &&
-      mouseClickY > button.y
+      mouseClickX < playAgainButton.x + playAgainButton.width &&
+      mouseClickX > playAgainButton.x &&
+      mouseClickY < playAgainButton.y + playAgainButton.height &&
+      mouseClickY > playAgainButton.y
     ) {
       const canvasContainer = document.querySelector('.canvas-container');
       canvasContainer.removeChild(canvasContainer.firstChild);
@@ -332,5 +339,34 @@ export class PokemonBattleground {
     battleSong.volume = 0.07;
     hitSound.volume = 0.2;
     battleSong.play();
+  }
+
+  playerTurnListener(context) {
+    const startPlayerTurn = (event) => {
+      const canvasBorders = context.canvas.getBoundingClientRect();
+      const mouseClickX = event.clientX - canvasBorders.left;
+      const mouseClickY = event.clientY - canvasBorders.top;
+
+      const attackButton = this.attackButtonCanvasTemplate;
+
+      if (
+        mouseClickX < attackButton.x + attackButton.width &&
+        mouseClickX > attackButton.x &&
+        mouseClickY < attackButton.y + attackButton.height &&
+        mouseClickY > attackButton.y
+      ) {
+        this.playerTurn();
+
+        context.canvas.removeEventListener('click', startPlayerTurnCallback);
+        this.isPlayerTurn = false;
+      }
+    };
+
+    this.attackButtonCanvasTemplate = this.canvasDrawings.drawAttackButton(context);
+
+    const startPlayerTurnCallback = startPlayerTurn.bind(this);
+    context.canvas.addEventListener('click', startPlayerTurnCallback);
+
+    this.isPlayerTurn = true;
   }
 }

@@ -63,6 +63,22 @@ export class CanvasDrawings {
     return buttonTemplate;
   }
 
+  drawAttackButton(context) {
+    const buttonWidth = context.canvas.width * 0.05 + 60;
+    const buttonHeight = context.canvas.height * 0.03 + 20;
+
+    const x = (context.canvas.width - buttonWidth) * 0.5;
+    const y = context.canvas.height * 0.91;
+
+    const buttonImg = new Image();
+    buttonImg.src = `./assets/images/attack-button.png`;
+    buttonImg.onload = () => context.drawImage(buttonImg, x, y, buttonWidth, buttonHeight);
+
+    const buttonTemplate = { width: buttonWidth, height: buttonHeight, x, y };
+
+    return buttonTemplate;
+  }
+
   drawPokemonName(context, canvasTemplate, pokemonDetails) {
     const name = pokemonDetails.name;
     const x = canvasTemplate.x;

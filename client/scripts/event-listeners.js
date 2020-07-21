@@ -6,12 +6,14 @@ export class EventListeners {
   onInit() {
     const cardImages = document.querySelectorAll('.pokemon-sprite > img');
 
-    const startBattle = this.pokemonBattleground.startBattle.bind(this.pokemonBattleground);
-    cardImages.forEach((b) => b.addEventListener('click', startBattle));
-
-    const resizeCanvas = this.pokemonBattleground.setUpBattleground.bind(
+    const startBattleCallback = this.pokemonBattleground.startBattle.bind(
       this.pokemonBattleground
     );
-    window.addEventListener('resize', resizeCanvas);
+    cardImages.forEach((b) => b.addEventListener('click', startBattleCallback));
+
+    const resizeCanvasCallback = this.pokemonBattleground.setUpBattleground.bind(
+      this.pokemonBattleground
+    );
+    window.addEventListener('resize', resizeCanvasCallback);
   }
 }
