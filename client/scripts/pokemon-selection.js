@@ -13,6 +13,8 @@ export class PokemonSelection {
 
   async generatePokemonCards(pokemonList) {
     const pokemonContainer = document.querySelector('.pokemon-container');
+    const spinnerContainer = document.querySelector('.spinner-container');
+
     pokemonContainer.style.display = 'none';
 
     while (pokemonContainer.firstChild) {
@@ -38,6 +40,8 @@ export class PokemonSelection {
         mappedDetails.pokemonMoves
       );
     }
+
+    spinnerContainer.style.display = 'none';
     pokemonContainer.style.display = 'flex';
   }
 
