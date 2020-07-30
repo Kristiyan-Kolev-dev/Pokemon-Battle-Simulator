@@ -17,9 +17,9 @@ export class PokemonBattleground {
   }
 
   async startBattle(event) {
+    this.generateCanvas();
     await this.generatePlayerPokemon(event.target.dataset.id);
     await this.generateOpponentPokemon();
-    this.generateCanvas();
     this.setUpBattleground();
     this.generateAudio();
 
@@ -32,11 +32,11 @@ export class PokemonBattleground {
         const speedTieResolver = randomIntegerGenerator(1, 2);
         speedTieResolver === 1 ? this.playerTurnListener(this.context) : this.opponentTurn();
       }
-    }, 1500);
+    }, 1750);
   }
 
   async generatePlayerPokemon(pokemonId) {
-    const pokemonDetails = await this.pokemonService.getPokemonDetails(pokemonId);
+    const pokemonDetails = await this.pokemonService.getSinglePokemonDetails(pokemonId);
     const mappedDetails = mapPokemonDetails(pokemonDetails);
 
     this.playerPokemon = new Pokemon(mappedDetails);
@@ -45,7 +45,7 @@ export class PokemonBattleground {
   async generateOpponentPokemon() {
     const pokemonId = randomIntegerGenerator(1, 50);
 
-    const pokemonDetails = await this.pokemonService.getPokemonDetails(pokemonId);
+    const pokemonDetails = await this.pokemonService.getSinglePokemonDetails(pokemonId);
     const mappedDetails = mapPokemonDetails(pokemonDetails);
 
     this.opponentPokemon = new Pokemon(mappedDetails);
@@ -58,6 +58,9 @@ export class PokemonBattleground {
     const canvasContainer = document.querySelector('.canvas-container');
     canvasContainer.innerHTML = '<canvas></canvas>';
     this.context = document.querySelector('canvas').getContext('2d');
+
+    const resizeCanvasCallback = this.setUpBattleground.bind(this);
+    window.addEventListener('resize', resizeCanvasCallback);
   }
 
   // called on every window resize event
@@ -87,8 +90,8 @@ export class PokemonBattleground {
       y: context.canvas.height * 0.73,
       width: context.canvas.width * 0.07 + 50,
       height: context.canvas.height * 0.17 + 50,
-      dx: 6,
-      dy: 3,
+      dx: context.canvas.width / 200 + 2.5,
+      dy: context.canvas.width / 400 + 1.25,
       sprite: undefined,
     };
     this.playerCanvasTemplate = playerCanvasTemplate;
@@ -98,8 +101,8 @@ export class PokemonBattleground {
       y: context.canvas.height * 0.55,
       width: context.canvas.width * 0.07 + 50,
       height: context.canvas.height * 0.17 + 50,
-      dx: 6,
-      dy: 3,
+      dx: context.canvas.width / 200 + 2.5,
+      dy: context.canvas.width / 400 + 1.25,
       sprite: undefined,
     };
     this.opponentCanvasTemplate = opponentCanvasTemplate;

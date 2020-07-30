@@ -1,24 +1,48 @@
 import { baseURL } from './commons.js';
 
 export class PokemonService {
-  async getFirstTwentyPokemon() {
-    const response = await fetch(`${baseURL}/pokemon`);
-    const pokemon = await response.json();
+  async getTwentyPokemon(offset) {
+    try {
+      const response = await fetch(`${baseURL}/pokemon?limit=20&offset=${offset}`);
+      const pokemon = await response.json();
 
-    return pokemon;
+      return pokemon;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  async getFirstFiftyPokemon() {
-    const response = await fetch(`${baseURL}/pokemon?limit=50&offset=0`);
-    const pokemon = await response.json();
+  async getFiftyPokemon(offset) {
+    try {
+      const response = await fetch(`${baseURL}/pokemon?limit=50&offset=${offset}`);
+      const pokemon = await response.json();
 
-    return pokemon;
+      return pokemon;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  async getPokemonDetails(pokemonNameOrId) {
-    const response = await fetch(`${baseURL}/pokemon/${pokemonNameOrId}`);
-    const details = await response.json();
+  async getSinglePokemonDetails(pokemonNameOrId) {
+    try {
+      const response = await fetch(`${baseURL}/pokemon/${pokemonNameOrId}`);
+      const details = await response.json();
 
-    return details;
+      return details;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getMultiplePokemonDetails(pokemonList) {
+    try {
+      const details = await Promise.all(
+        pokemonList.map((pokemon) => fetch(pokemon.url).then((response) => response.json()))
+      );
+
+      return details;
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

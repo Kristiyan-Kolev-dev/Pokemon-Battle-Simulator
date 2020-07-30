@@ -1,48 +1,65 @@
 import { mapPokemonDetails } from './commons.js';
 
 export class PokemonSelection {
-  constructor(pokemonServise) {
+  constructor(pokemonServise, pokemonBattleground) {
     this.pokemonServise = pokemonServise;
+    this.pokemonBattleground = pokemonBattleground;
+    this.pokemonServiseOffset = 0;
   }
 
   async onInit() {
-    const { results: pokemonList } = await this.pokemonServise.getFirstFiftyPokemon();
+    const { results: pokemonList } = await this.pokemonServise.getFiftyPokemon(
+      this.pokemonServiseOffset
+    );
 
-    await this.generatePokemonCards(pokemonList);
+    const pokemonDetails = await this.pokemonServise.getMultiplePokemonDetails(pokemonList);
+    await this.generatePokemonCards(pokemonDetails);
+
+    this.pokemonServiseOffset += pokemonList.length;
   }
 
-  async generatePokemonCards(pokemonList) {
+  async generatePokemonCards(pokemonDetails) {
     const pokemonContainer = document.querySelector('.pokemon-container');
-    const spinnerContainer = document.querySelector('.spinner-container');
-
     pokemonContainer.style.display = 'none';
 
-    while (pokemonContainer.firstChild) {
-      pokemonContainer.removeChild(pokemonContainer.firstChild);
-    }
+    const spinner = document.querySelector('.spinner');
 
-    for (const element of pokemonList) {
-      const pokemonDetails = await this.pokemonServise.getPokemonDetails(element.name);
+    const mappedDetails = pokemonDetails.map((details) => mapPokemonDetails(details));
 
-      const mappedDetails = mapPokemonDetails(pokemonDetails);
+    const pokemonCards = mappedDetails.reduce(
+      (pokemonCards, pokemonDetails) =>
+        pokemonCards +
+        this.pokemonCardBuilder(
+          pokemonDetails.pokemonId,
+          pokemonDetails.pokemonSprites,
+          pokemonDetails.pokemonName,
+          pokemonDetails.pokemonAbility,
+          pokemonDetails.pokemonHealthPoints,
+          pokemonDetails.pokemonAttack,
+          pokemonDetails.pokemonDefence,
+          pokemonDetails.pokemonSpecialAttack,
+          pokemonDetails.pokemonSpecialDefence,
+          pokemonDetails.pokemonSpeed,
+          pokemonDetails.pokemonMoves
+        ),
+      ''
+    );
 
-      pokemonContainer.innerHTML += this.pokemonCardBuilder(
-        mappedDetails.pokemonId,
-        mappedDetails.pokemonSprites,
-        mappedDetails.pokemonName,
-        mappedDetails.pokemonAbility,
-        mappedDetails.pokemonHealthPoints,
-        mappedDetails.pokemonAttack,
-        mappedDetails.pokemonDefence,
-        mappedDetails.pokemonSpecialAttack,
-        mappedDetails.pokemonSpecialDefence,
-        mappedDetails.pokemonSpeed,
-        mappedDetails.pokemonMoves
-      );
-    }
+    pokemonContainer.innerHTML += pokemonCards;
+    this.addStartBattleListeners();
 
-    spinnerContainer.style.display = 'none';
+    spinner.style.display = 'none';
     pokemonContainer.style.display = 'flex';
+  }
+
+  addStartBattleListeners() {
+    const cardImages = document.querySelectorAll('.pokemon-sprite > img');
+
+    const startBattleCallback = this.pokemonBattleground.startBattle.bind(
+      this.pokemonBattleground
+    );
+
+    cardImages.forEach((b) => b.addEventListener('click', startBattleCallback));
   }
 
   pokemonCardBuilder = (

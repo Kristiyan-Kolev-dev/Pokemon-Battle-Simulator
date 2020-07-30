@@ -88,18 +88,19 @@ canvas {
   cursor: pointer;
 }
 
-.spinner-container {
-  margin: 4em;
+.loading-container {
   text-align: center;
+  margin: 0.5em;
+  margin-bottom: 2em;
 }
 
 .spinner {
   animation: spinningColor 1.5s ease-in-out infinite;
-  margin: 50px auto;
+  margin: 5px auto;
   border: 5px double #f0eff5;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 2.5em;
+  height: 2.5em;
 }
 
 @keyframes spinningColor {
@@ -155,5 +156,35 @@ canvas {
   .pokemon-sprite > img {
     min-width: 50%;
     max-width: 50%;
+  }
+}
+
+@media (min-width: 1920px) {
+  body {
+    font-size: 1.4em;
+  }
+
+  .pokemon-card {
+    row-gap: 6px;
+    width: 270px;
+  }
+
+  .pokemon-sprite > img {
+    min-width: 72.5%;
+  }
+}
+
+@media (min-width: 2560px) {
+  body {
+    font-size: 1.75em;
+  }
+
+  .pokemon-card {
+    row-gap: 7px;
+    width: 310px;
+  }
+
+  .pokemon-sprite > img {
+    min-width: 75%;
   }
 }
