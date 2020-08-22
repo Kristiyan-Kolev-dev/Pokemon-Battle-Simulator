@@ -7,11 +7,13 @@ https://pokemon-battle-simulator-bfb15.web.app/
 
 #### Screenshots:
 
-<hr>
-<img src="./screenshots/01.pokemon-selection.png" alt="logo" width="275px" />
-<img src="./screenshots/02.pokemon-selection.png" alt="logo" width="275px" />
-<img src="./screenshots/01.pokemon-battle.png" alt="logo" width="275px" />
-<img src="./screenshots/02.pokemon-battle.png" alt="logo" width="275px" />
-<img src="./screenshots/03.pokemon-battle.png" alt="logo" width="275px" />
-<img src="./screenshots/04.pokemon-battle.png" alt="logo" width="275px" />
+<p float="left">
+  <img src="./screenshots/01.pokemon-selection.png" width="250px"/>
+  <img src="./screenshots/02.pokemon-selection.png" width="250px"/>
+  <img src="./screenshots/01.pokemon-battle.png" width="250px"/>
+  <img src="./screenshots/02.pokemon-battle.png" width="250px"/>
+  <img src="./screenshots/03.pokemon-battle.png" width="250px"/>
+  <img src="./screenshots/04.pokemon-battle.png" width="250px"/>
+<p>
+  
 <hr>
