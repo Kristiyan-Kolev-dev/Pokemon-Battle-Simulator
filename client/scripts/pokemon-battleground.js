@@ -11,26 +11,29 @@ export class PokemonBattleground {
 
   isPlayerTurn = false;
 
-  constructor(pokemonService, canvasDrawings) {
+  constructor(pokemonService, canvasDrawings, canvasAnimations) {
     this.pokemonService = pokemonService;
     this.canvasDrawings = canvasDrawings;
+    this.canvasAnimations = canvasAnimations;
   }
 
   async startBattle(event) {
     this.generateCanvas();
     await this.generatePlayerPokemon(event.target.dataset.id);
     await this.generateOpponentPokemon();
-    this.setUpBattleground();
+    this.setUpBattleground(this.context);
     this.generateAudio();
 
     setTimeout(() => {
       if (this.playerPokemon.speed > this.opponentPokemon.speed) {
         this.playerTurnListener(this.context);
       } else if (this.playerPokemon.speed < this.opponentPokemon.speed) {
-        this.opponentTurn();
+        this.opponentTurn(this.context);
       } else {
         const speedTieResolver = randomIntegerGenerator(1, 2);
-        speedTieResolver === 1 ? this.playerTurnListener(this.context) : this.opponentTurn();
+        speedTieResolver === 1
+          ? this.playerTurnListener(this.context)
+          : this.opponentTurn(this.context);
       }
     }, 1750);
   }
@@ -43,7 +46,11 @@ export class PokemonBattleground {
   }
 
   async generateOpponentPokemon() {
-    const pokemonId = randomIntegerGenerator(1, 50);
+    let pokemonId = randomIntegerGenerator(1, 50);
+
+    while (pokemonId === this.playerPokemon.id) {
+      pokemonId = randomIntegerGenerator(1, 50);
+    }
 
     const pokemonDetails = await this.pokemonService.getSinglePokemonDetails(pokemonId);
     const mappedDetails = mapPokemonDetails(pokemonDetails);
@@ -59,16 +66,15 @@ export class PokemonBattleground {
     canvasContainer.innerHTML = '<canvas></canvas>';
     this.context = document.querySelector('canvas').getContext('2d');
 
-    const resizeCanvasCallback = this.setUpBattleground.bind(this);
+    const resizeCanvasCallback = this.setUpBattleground.bind(this, this.context);
     window.addEventListener('resize', resizeCanvasCallback);
   }
 
-  // called on every window resize event
-  setUpBattleground() {
+  // This method is called on every window resize event to provide a responsive canvas.
+  setUpBattleground(context) {
     if (!document.querySelector('canvas')) {
       return;
     }
-    const context = this.context;
 
     context.canvas.width = document.documentElement.clientWidth * 0.9;
     context.canvas.height = document.documentElement.clientHeight * 0.61;
@@ -132,178 +138,110 @@ export class PokemonBattleground {
     };
   }
 
-  playerTurn() {
-    const context = this.context;
+  async playerTurn(context) {
     const playerSprite = { ...this.playerCanvasTemplate };
     const opponentSprite = { ...this.opponentCanvasTemplate };
+    const animationDirection = 1;
 
-    const drawPlayer = () => {
-      this.canvasDrawings.drawPokemonSprite(context, playerSprite);
-    };
+    await this.canvasAnimations.movePokemonSpriteForward(
+      context,
+      playerSprite,
+      opponentSprite,
+      this.opponentPokemon,
+      animationDirection
+    );
 
-    const drawOpponent = () => {
-      this.canvasDrawings.drawPokemonSprite(context, opponentSprite);
+    const actualDamage = this.playerPokemon.calculateActualDamage(this.opponentPokemon);
+    hitSound.play();
 
-      this.canvasDrawings.drawHealthBar(
+    if (actualDamage > 0) {
+      await this.canvasAnimations.blinkPokemonSprite(
         context,
-        this.opponentCanvasTemplate,
+        playerSprite,
+        opponentSprite,
         this.opponentPokemon
       );
-    };
+    } else {
+      await this.canvasAnimations.animationDelay(550);
+    }
 
-    const moveForward = () => {
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    this.playerPokemon.normalAttack(this.opponentPokemon, actualDamage);
 
-      drawPlayer();
-      drawOpponent();
+    await this.canvasAnimations.movePokemonSpriteBackward(
+      context,
+      playerSprite,
+      opponentSprite,
+      this.opponentPokemon,
+      this.playerCanvasTemplate,
+      animationDirection
+    );
 
-      playerSprite.x += playerSprite.dx;
-      playerSprite.y -= playerSprite.dy;
+    this.canvasDrawings.redrawCanvas(
+      context,
+      this.playerCanvasTemplate,
+      this.opponentCanvasTemplate,
+      this.playerPokemon,
+      this.opponentPokemon
+    );
 
-      if (
-        playerSprite.x > opponentSprite.x - opponentSprite.height * 0.5 &&
-        playerSprite.y < opponentSprite.y + opponentSprite.width * 0.5
-      ) {
-        attack();
-      } else {
-        requestAnimationFrame(moveForward);
-      }
-    };
-
-    const attack = () => {
-      this.playerPokemon.normalAttack(this.opponentPokemon);
-      hitSound.play();
-
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-      drawPlayer();
-      drawOpponent();
-
-      setTimeout(() => {
-        moveBackward();
-      }, 1000);
-    };
-
-    const moveBackward = () => {
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-      drawPlayer();
-      drawOpponent();
-
-      playerSprite.x -= playerSprite.dx;
-      playerSprite.y += playerSprite.dy;
-
-      if (
-        playerSprite.x < this.playerCanvasTemplate.x &&
-        playerSprite.y > this.playerCanvasTemplate.y
-      ) {
-        this.canvasDrawings.redrawCanvas(
-          context,
-          this.playerCanvasTemplate,
-          this.opponentCanvasTemplate,
-          this.playerPokemon,
-          this.opponentPokemon
-        );
-
-        setTimeout(() => {
-          this.opponentPokemon.currentHealthPoints <= 0
-            ? this.endBattle(context)
-            : this.opponentTurn();
-        }, 500);
-      } else {
-        requestAnimationFrame(moveBackward);
-      }
-    };
-
-    // Starts the turn.
-    moveForward();
+    setTimeout(() => {
+      this.opponentPokemon.currentHealthPoints <= 0
+        ? this.endBattle(context)
+        : this.opponentTurn(context);
+    }, 500);
   }
 
-  opponentTurn() {
-    const context = this.context;
+  async opponentTurn(context) {
     const playerSprite = { ...this.playerCanvasTemplate };
     const opponentSprite = { ...this.opponentCanvasTemplate };
+    const animationDirection = -1;
 
-    const drawPlayer = () => {
-      this.canvasDrawings.drawPokemonSprite(context, playerSprite);
+    await this.canvasAnimations.movePokemonSpriteForward(
+      context,
+      opponentSprite,
+      playerSprite,
+      this.playerPokemon,
+      animationDirection
+    );
 
-      this.canvasDrawings.drawHealthBar(
+    const actualDamage = this.opponentPokemon.calculateActualDamage(this.playerPokemon);
+    hitSound.play();
+
+    if (actualDamage > 0) {
+      await this.canvasAnimations.blinkPokemonSprite(
         context,
-        this.playerCanvasTemplate,
+        opponentSprite,
+        playerSprite,
         this.playerPokemon
       );
-    };
+    } else {
+      await this.canvasAnimations.animationDelay(550);
+    }
 
-    const drawOpponent = () => {
-      this.canvasDrawings.drawPokemonSprite(context, opponentSprite);
-    };
+    this.opponentPokemon.normalAttack(this.playerPokemon, actualDamage);
 
-    const moveForward = () => {
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    await this.canvasAnimations.movePokemonSpriteBackward(
+      context,
+      opponentSprite,
+      playerSprite,
+      this.playerPokemon,
+      this.opponentCanvasTemplate,
+      animationDirection
+    );
 
-      drawOpponent();
-      drawPlayer();
+    this.canvasDrawings.redrawCanvas(
+      context,
+      this.playerCanvasTemplate,
+      this.opponentCanvasTemplate,
+      this.playerPokemon,
+      this.opponentPokemon
+    );
 
-      opponentSprite.x -= opponentSprite.dx;
-      opponentSprite.y += opponentSprite.dy;
-
-      if (
-        opponentSprite.x < playerSprite.x + playerSprite.height * 0.5 &&
-        opponentSprite.y > playerSprite.y - playerSprite.width * 0.5
-      ) {
-        attack();
-      } else {
-        requestAnimationFrame(moveForward);
-      }
-    };
-
-    const attack = () => {
-      this.opponentPokemon.normalAttack(this.playerPokemon);
-      hitSound.play();
-
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-      drawOpponent();
-      drawPlayer();
-
-      setTimeout(() => {
-        moveBackward();
-      }, 1000);
-    };
-
-    const moveBackward = () => {
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-      drawOpponent();
-      drawPlayer();
-
-      opponentSprite.x += opponentSprite.dx;
-      opponentSprite.y -= opponentSprite.dy;
-
-      if (
-        opponentSprite.x > this.opponentCanvasTemplate.x &&
-        opponentSprite.y < this.opponentCanvasTemplate.y
-      ) {
-        this.canvasDrawings.redrawCanvas(
-          context,
-          this.playerCanvasTemplate,
-          this.opponentCanvasTemplate,
-          this.playerPokemon,
-          this.opponentPokemon
-        );
-
-        setTimeout(() => {
-          this.playerPokemon.currentHealthPoints <= 0
-            ? this.endBattle(context)
-            : this.playerTurnListener(context);
-        }, 500);
-      } else {
-        requestAnimationFrame(moveBackward);
-      }
-    };
-
-    // Starts the turn.
-    moveForward();
+    setTimeout(() => {
+      this.playerPokemon.currentHealthPoints <= 0
+        ? this.endBattle(context)
+        : this.playerTurnListener(context);
+    }, 500);
   }
 
   endBattle(context) {
@@ -339,8 +277,8 @@ export class PokemonBattleground {
   }
 
   generateAudio() {
-    battleSong.volume = 0.07;
-    hitSound.volume = 0.2;
+    battleSong.volume = 0.02;
+    hitSound.volume = 0.06;
     battleSong.play();
   }
 
@@ -358,7 +296,7 @@ export class PokemonBattleground {
         mouseClickY < attackButton.y + attackButton.height &&
         mouseClickY > attackButton.y
       ) {
-        this.playerTurn();
+        this.playerTurn(context);
 
         context.canvas.removeEventListener('click', startPlayerTurnCallback);
         this.isPlayerTurn = false;

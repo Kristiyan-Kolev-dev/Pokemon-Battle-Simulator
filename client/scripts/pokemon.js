@@ -16,8 +16,8 @@ export class Pokemon {
     this.moves = pokemonDetails.pokemonMoves;
   }
 
-  normalAttack(target) {
-    target.currentHealthPoints -= this.calculateActualDamage(target);
+  normalAttack(target, damage) {
+    target.currentHealthPoints -= damage;
   }
 
   calculateActualDamage(target) {
