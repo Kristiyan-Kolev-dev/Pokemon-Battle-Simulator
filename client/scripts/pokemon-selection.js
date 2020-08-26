@@ -4,18 +4,19 @@ export class PokemonSelection {
   constructor(pokemonServise, pokemonBattleground) {
     this.pokemonServise = pokemonServise;
     this.pokemonBattleground = pokemonBattleground;
-    this.pokemonServiseOffset = 0;
+    this.pokemonListOffset = 0;
   }
 
   async onInit() {
-    const { results: pokemonList } = await this.pokemonServise.getFiftyPokemon(
-      this.pokemonServiseOffset
+    const { results: pokemonList } = await this.pokemonServise.getPokemonList(
+      50,
+      this.pokemonListOffset
     );
 
     const pokemonDetails = await this.pokemonServise.getMultiplePokemonDetails(pokemonList);
     await this.generatePokemonCards(pokemonDetails);
 
-    this.pokemonServiseOffset += pokemonList.length;
+    this.pokemonListOffset += pokemonList.length;
   }
 
   async generatePokemonCards(pokemonDetails) {

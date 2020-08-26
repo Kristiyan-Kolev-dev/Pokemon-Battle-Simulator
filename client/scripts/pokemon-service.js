@@ -1,20 +1,9 @@
 import { baseURL } from './commons.js';
 
 export class PokemonService {
-  async getTwentyPokemon(offset) {
+  async getPokemonList(length, offset) {
     try {
-      const response = await fetch(`${baseURL}/pokemon?limit=20&offset=${offset}`);
-      const pokemon = await response.json();
-
-      return pokemon;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async getFiftyPokemon(offset) {
-    try {
-      const response = await fetch(`${baseURL}/pokemon?limit=50&offset=${offset}`);
+      const response = await fetch(`${baseURL}/pokemon?limit=${length}&offset=${offset}`);
       const pokemon = await response.json();
 
       return pokemon;

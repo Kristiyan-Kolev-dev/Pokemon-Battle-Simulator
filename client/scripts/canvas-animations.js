@@ -13,8 +13,8 @@ export class CanvasAnimations {
     const renderCanvas = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-      this.canvasDrawings.drawPokemonSprite(context, attackingSprite);
       this.canvasDrawings.drawPokemonSprite(context, defendingSprite);
+      this.canvasDrawings.drawPokemonSprite(context, attackingSprite);
       this.canvasDrawings.drawHealthBar(context, defendingSprite, defendingPokemon);
 
       attackingSprite.x += attackingSprite.dx * animationDirection;
@@ -46,8 +46,8 @@ export class CanvasAnimations {
     const renderCanvas = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-      this.canvasDrawings.drawPokemonSprite(context, attackingSprite);
       this.canvasDrawings.drawPokemonSprite(context, defendingSprite);
+      this.canvasDrawings.drawPokemonSprite(context, attackingSprite);
       this.canvasDrawings.drawHealthBar(context, defendingSprite, defendingPokemon);
 
       attackingSprite.x -= attackingSprite.dx * animationDirection;
@@ -68,21 +68,11 @@ export class CanvasAnimations {
     );
   }
 
-  async blinkPokemonSprite(
-    context,
-    attackingSprite,
-    defendingSprite,
-    defendingPokemon,
-    blinkTracker = 0
-  ) {
+  async blinkPokemonSprite(context, attackingSprite, defendingSprite, defendingPokemon) {
+    let blinkTracker = 0;
+
     const renderCanvas = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-      context.filter = 'brightness(100%)';
-      context.globalAlpha = 1;
-
-      this.canvasDrawings.drawHealthBar(context, defendingSprite, defendingPokemon);
-      this.canvasDrawings.drawPokemonSprite(context, attackingSprite);
 
       if (blinkTracker % 2 === 0) {
         context.filter = 'brightness(150%)';
@@ -90,6 +80,12 @@ export class CanvasAnimations {
       }
 
       this.canvasDrawings.drawPokemonSprite(context, defendingSprite);
+
+      context.filter = 'brightness(100%)';
+      context.globalAlpha = 1;
+
+      this.canvasDrawings.drawPokemonSprite(context, attackingSprite);
+      this.canvasDrawings.drawHealthBar(context, defendingSprite, defendingPokemon);
 
       blinkTracker++;
     };
